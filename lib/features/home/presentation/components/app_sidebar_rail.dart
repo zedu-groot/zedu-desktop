@@ -163,33 +163,35 @@ class _RailNavItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = context.colors;
 
-    return InkWell(
-      onTap: onTap,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 6),
-        child: Column(
-          children: [
-            Container(
-              width: 32,
-              height: 32,
-              decoration: BoxDecoration(
-                color: isActive
-                    ? colors.primary.withValues(alpha: 0.95)
-                    : Colors.transparent,
-                borderRadius: BorderRadius.circular(7),
+    return SizedBox(
+      width: double.infinity,
+      child: InkWell(
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 2),
+          child: Column(
+            children: [
+              Container(
+                width: 32,
+                height: 32,
+                decoration: BoxDecoration(
+                  color: isActive
+                      ? colors.primary.withValues(alpha: 0.95)
+                      : Colors.transparent,
+                  borderRadius: BorderRadius.circular(7),
+                ),
+                child: Icon(icon, color: colors.onPrimary, size: 20),
               ),
-              child: Icon(icon, color: colors.onPrimary, size: 18),
-            ),
-            const SizedBox(height: 4),
-            Text(
-              label,
-              style: TextStyle(
-                color: colors.onPrimary.withValues(alpha: 0.92),
-                fontSize: 9,
-                fontWeight: FontWeight.w500,
+              const SizedBox(height: 4),
+              Text(
+                label,
+                style: context.textTheme.labelSmall?.copyWith(
+                  color: colors.onPrimary.withValues(alpha: 0.92),
+                  fontWeight: FontWeight.w500,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -230,7 +232,7 @@ class _RailBottomIcon extends StatelessWidget {
                     : Colors.transparent,
                 borderRadius: BorderRadius.circular(7),
               ),
-              child: Icon(icon, color: colors.onPrimary, size: 18),
+              child: Icon(icon, color: colors.onPrimary, size: 20),
             ),
             if (hasNotification)
               Positioned(
