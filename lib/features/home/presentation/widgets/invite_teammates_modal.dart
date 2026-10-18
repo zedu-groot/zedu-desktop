@@ -58,15 +58,32 @@ class _InviteTeammatesModalState extends ConsumerState<InviteTeammatesModal> {
     super.dispose();
   }
 
-  void _addEmailFromInput() {
+  static final RegExp _emailPattern = RegExp(r'^[^\s@]+@[^\s@]+\.[^\s@]{2,}$');
+
+  /// Adds the typed text as an invite. Returns false, and tells the user,
+  /// when the text is not a valid email address.
+  bool _addEmailFromInput() {
     final email = _emailController.text.trim();
-    if (email.isNotEmpty && email.contains('@')) {
-      _addInvite(email, null);
+    if (email.isEmpty) return true;
+    if (!_emailPattern.hasMatch(email)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text('Please enter a valid email address.'),
+          backgroundColor: context.colors.error,
+        ),
+      );
+      return false;
     }
+    _addInvite(email, null);
+    return true;
   }
 
   void _addInvite(String email, String? userId) {
-    if (!_invites.any((invite) => invite['email'] == email)) {
+    final normalized = email.toLowerCase();
+    final alreadyAdded = _invites.any(
+      (invite) => (invite['email'] ?? '').toLowerCase() == normalized,
+    );
+    if (!alreadyAdded) {
       setState(() {
         _invites.add({'email': email, 'userId': userId});
         _filteredUsers = [];
@@ -82,7 +99,8 @@ class _InviteTeammatesModalState extends ConsumerState<InviteTeammatesModal> {
   }
 
   Future<void> _submit() async {
-    _addEmailFromInput(); // Catch any typed email not yet submitted
+    // Catch any typed email not yet submitted; stop if it is not valid.
+    if (!_addEmailFromInput()) return;
 
     if (_invites.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
